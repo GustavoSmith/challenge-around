@@ -133,7 +133,7 @@ function VideoPlayer({
 
   return (
     <section
-      className={cn("group relative size-full m-auto bg-black", {
+      className={cn("group relative max-w-full size-full m-auto bg-black", {
         "max-w-4xl": !fullscreen,
       })}
       ref={videoContainerRef}
@@ -141,7 +141,7 @@ function VideoPlayer({
       {/* biome-ignore lint/a11y/useMediaCaption: <explanation> */}
       {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
       <video
-        className={cn("m-auto max-w-4xl", {
+        className={cn("m-auto w-fit md:max-w-4xl", {
           "max-w-full size-full": fullscreen,
         })}
         onClick={handlePlayPause}
