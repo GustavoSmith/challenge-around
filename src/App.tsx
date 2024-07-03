@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./components/ui/button";
 import { Slider } from "./components/ui/slider";
-/* import { cn } from "./lib/utils"; */
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
 import {
@@ -141,7 +140,7 @@ function VideoPlayer({
 
   return (
     <section
-      className={cn("group relative max-w-full size-full m-auto bg-black", {
+      className={cn("group relative m-auto size-full max-w-full bg-black", {
         "max-w-4xl": !fullscreen,
       })}
       ref={videoContainerRef}
@@ -149,9 +148,9 @@ function VideoPlayer({
       {/* biome-ignore lint/a11y/useMediaCaption: <explanation> */}
       <video
         className={cn(
-          "outline-none focus:outline-none m-auto w-fit md:max-w-4xl",
+          "m-auto w-fit outline-none focus:outline-none md:max-w-4xl",
           {
-            "max-w-full size-full": fullscreen,
+            "size-full max-w-full": fullscreen,
           }
         )}
         tabIndex={0}
@@ -168,7 +167,7 @@ function VideoPlayer({
           type="video/mp4"
         />
       </video>
-      <div className="z-20 duration-300 transition opacity-0 group-hover:opacity-100 flex flex-col w-full absolute bottom-0">
+      <div className="absolute bottom-0 z-20 flex w-full flex-col opacity-0 transition duration-300 group-hover:opacity-100">
         <Slider
           value={[currentTime]}
           min={0}
@@ -177,22 +176,22 @@ function VideoPlayer({
           onValueChange={(value) => handleCurrentTimeChange(value[0] as number)}
           className="w-full bg-transparent"
         />
-        <div className="flex items-center gap-4 pl-4 bg-black/50">
+        <div className="flex items-center gap-4 bg-black/50 pl-4">
           <Button
-            className="bg-transparent w-fit hover:bg-transparent p-0"
+            className="w-fit bg-transparent p-0 hover:bg-transparent"
             onClick={handlePlayPause}
           >
             {isPlaying && currentTime !== duration ? <Pause /> : <Play />}
           </Button>
           <Button
-            className="bg-transparent w-fit hover:bg-transparent p-0"
+            className="w-fit bg-transparent p-0 hover:bg-transparent"
             onClick={handleStop}
           >
             <ArrowLeftToLine />
           </Button>
-          <div className="flex items-center gap-1 text-white w-fit group/volume">
+          <div className="group/volume flex w-fit items-center gap-1 text-white">
             <Button
-              className="bg-transparent w-fit hover:bg-transparent p-0"
+              className="w-fit bg-transparent p-0 hover:bg-transparent"
               onClick={() => handleVolumeChange(0)}
             >
               {volume === 0 ? (
@@ -209,28 +208,28 @@ function VideoPlayer({
               max={100}
               step={1}
               onValueChange={(value) => handleVolumeChange(value[0] as number)}
-              className="duration-500 transition-all ease-in-out group-hover/volume:translate-x-0 -translate-x-5 opacity-0 group-hover/volume:opacity-100 w-0 rounded-full group-hover/volume:w-24 flex bg-transparent"
+              className="flex w-0 -translate-x-5 rounded-full bg-transparent opacity-0 transition-all duration-500 ease-in-out group-hover/volume:w-24 group-hover/volume:translate-x-0 group-hover/volume:opacity-100"
             />
           </div>
-          <span className="text-white text-sm">
+          <span className="text-sm text-white">
             {formatTime(currentTime)} / {formatTime(duration)}
           </span>
-          <div className="flex gap-4 mr-0 ml-auto pr-4 group/playback">
+          <div className="group/playback ml-auto mr-0 flex gap-4 pr-4">
             <Popover
               open={playbackRatePopoverOpen}
               onOpenChange={setPlaybackRatePopoverOpen}
             >
-              <PopoverTrigger className="bg-transparent w-fit hover:bg-transparent p-0 text-white">
+              <PopoverTrigger className="w-fit bg-transparent p-0 text-white hover:bg-transparent">
                 {playbackRate}x
               </PopoverTrigger>
               <PopoverContent
                 sideOffset={16}
-                className="bg-black/75 text-white p-0 w-16 m-0"
+                className="m-0 w-16 bg-black/75 p-0 text-white"
                 side="top"
               >
                 <ToggleGroup
                   type="single"
-                  className="overflow-y-auto h-fit flex flex-col"
+                  className="flex h-fit flex-col overflow-y-auto"
                   defaultValue="1"
                   value={`${playbackRate}`}
                   onValueChange={handlePlaybackRateChange}
@@ -240,7 +239,7 @@ function VideoPlayer({
                       key={rate}
                       value={`${rate}`}
                       aria-label={`${rate}x`}
-                      className="aria-checked:bg-black/50 w-full first:rounded-t-md last:rounded-b-md py-1"
+                      className="w-full py-1 first:rounded-t-md last:rounded-b-md aria-checked:bg-black/50"
                     >
                       {rate}x
                     </ToggleGroupItem>
@@ -249,7 +248,7 @@ function VideoPlayer({
               </PopoverContent>
             </Popover>
             <Button
-              className="bg-transparent w-fit hover:bg-transparent p-0 text-white"
+              className="w-fit bg-transparent p-0 text-white hover:bg-transparent"
               onClick={toggleFullScreen}
             >
               {fullscreen ? <Minimize /> : <Maximize />}
@@ -275,7 +274,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh bg-gray-100 p-4">
+    <div className="flex min-h-svh flex-col items-center justify-center bg-gray-100 p-4">
       {!videoSrc && (
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="video">
