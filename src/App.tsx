@@ -29,12 +29,14 @@ function formatTime(seconds: number) {
   return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
 
-const playbackRateOptions = [-16, -8, -4, -2, 1, 2, 4, 8, 16 /* , 32, 64 */];
+const playbackRateOptions = [
+  /* -16, -8, -4, -2, */ 1, 2, 4, 8, 16 /* , 32, 64 */,
+];
 
 // TODO:
-// 1. Fast Forward custom en velocidades 32x,64x
+// 1. Fast Forward custom en velocidades 32x, 64x
 // 2. Backwards custom en velocidades -2px, -4px, -8px, -16x
-// 3. Resolución de bugs: de -16x a 8x o 16x a veces el reproductor queda atascado. Tampoco se reproduce correctamente en resoluciones como 640x360
+// 3. Resolución de bugs: No se reproduce correctamente en resoluciones como 640x360
 // 4. Mejoras en accesibilidad y/o diseño
 
 function VideoPlayer({
@@ -105,13 +107,7 @@ function VideoPlayer({
   const handlePlaybackRateChange = (rate: string) => {
     if (videoRef.current) {
       const newRate = Number(rate);
-      if (newRate < 1) {
-        videoRef.current.playbackRate = 1;
-        videoRef.current.playbackRate = 1 / Math.abs(newRate);
-      } else {
-        videoRef.current.playbackRate = newRate;
-      }
-
+      videoRef.current.playbackRate = newRate;
       setPlaybackRate(newRate);
       setPlaybackRatePopoverOpen(false);
     }
@@ -131,6 +127,24 @@ function VideoPlayer({
     }
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.code === "Space") {
+      handlePlayPause();
+    }
+
+    if (event.code === "ArrowLeft") {
+      if (videoRef.current) {
+        videoRef.current.currentTime -= 1;
+      }
+    }
+
+    if (event.code === "ArrowRight") {
+      if (videoRef.current) {
+        videoRef.current.currentTime += 1;
+      }
+    }
+  };
+
   return (
     <section
       className={cn("group relative max-w-full size-full m-auto bg-black", {
@@ -139,12 +153,16 @@ function VideoPlayer({
       ref={videoContainerRef}
     >
       {/* biome-ignore lint/a11y/useMediaCaption: <explanation> */}
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
       <video
-        className={cn("m-auto w-fit md:max-w-4xl", {
-          "max-w-full size-full": fullscreen,
-        })}
+        className={cn(
+          "outline-none focus:outline-none m-auto w-fit md:max-w-4xl",
+          {
+            "max-w-full size-full": fullscreen,
+          }
+        )}
+        tabIndex={0}
         onClick={handlePlayPause}
+        onKeyDown={handleKeyPress}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         ref={videoRef as React.RefObject<HTMLVideoElement>}
@@ -214,6 +232,7 @@ function VideoPlayer({
               <PopoverContent
                 sideOffset={16}
                 className="bg-black/75 text-white p-0 w-16 m-0"
+                side="top"
               >
                 <ToggleGroup
                   type="single"
