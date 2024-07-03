@@ -84,11 +84,10 @@ function VideoPlayer({
     }
   };
 
-  const handleCurrentTimeChange = (value: number[]) => {
-    const newValue = value[0] as number;
+  const handleCurrentTimeChange = (value: number) => {
     if (videoRef.current) {
-      videoRef.current.currentTime = newValue;
-      setCurrentTime(newValue);
+      videoRef.current.currentTime = value;
+      setCurrentTime(value);
     }
   };
 
@@ -127,22 +126,17 @@ function VideoPlayer({
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.code === "Space") {
-      handlePlayPause();
-    }
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    const keyActions = {
+      Space: handlePlayPause,
+      ArrowLeft: () => handleCurrentTimeChange(currentTime - 1),
+      ArrowRight: () => handleCurrentTimeChange(currentTime + 1),
+      ArrowUp: () => handleVolumeChange(volume + 10),
+      ArrowDown: () => handleVolumeChange(volume - 10),
+    };
 
-    if (event.code === "ArrowLeft") {
-      if (videoRef.current) {
-        videoRef.current.currentTime -= 1;
-      }
-    }
-
-    if (event.code === "ArrowRight") {
-      if (videoRef.current) {
-        videoRef.current.currentTime += 1;
-      }
-    }
+    const action = keyActions[event.code as keyof typeof keyActions];
+    if (action) action();
   };
 
   return (
@@ -162,7 +156,7 @@ function VideoPlayer({
         )}
         tabIndex={0}
         onClick={handlePlayPause}
-        onKeyDown={handleKeyPress}
+        onKeyDown={handleKeyDown}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         ref={videoRef as React.RefObject<HTMLVideoElement>}
@@ -180,7 +174,7 @@ function VideoPlayer({
           min={0}
           max={duration}
           step={1}
-          onValueChange={handleCurrentTimeChange}
+          onValueChange={(value) => handleCurrentTimeChange(value[0] as number)}
           className="w-full bg-transparent"
         />
         <div className="flex items-center gap-4 pl-4 bg-black/50">
