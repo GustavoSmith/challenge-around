@@ -161,12 +161,8 @@ function VideoPlayer({
         ref={videoRef as React.RefObject<HTMLVideoElement>}
         src={videoSrc}
         controls={false}
-      >
-        <source
-          src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4"
-          type="video/mp4"
-        />
-      </video>
+      />
+
       <div className="absolute bottom-0 z-20 flex w-full flex-col opacity-0 transition duration-300 group-hover:opacity-100">
         <Slider
           value={[currentTime]}
